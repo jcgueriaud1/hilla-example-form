@@ -1,13 +1,20 @@
-import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
+import { useForm } from '@vaadin/hilla-react-form';
+import PersonModel from "Frontend/generated/com/example/PersonModel";
+import {PersonEndpoint} from "Frontend/generated/endpoints";
+import {Button, TextField} from "@vaadin/react-components";
 
-export const config: ViewConfig = { menu: { order: 0, icon: 'line-awesome/svg/file.svg' }, title: 'Home' };
+export default function PersonView() {
+    const { model, submit, field } = useForm(PersonModel, {
+        onSubmit: async (person) => {
+            await PersonEndpoint.savePerson(person);
+        }
+    });
 
-export default function HomeView() {
-  return (
-    <div className="flex flex-col h-full items-center justify-center p-l text-center box-border">
-      <img style={{ width: '200px' }} src="images/empty-plant.png" />
-      <h2>This place intentionally left empty</h2>
-      <p>It’s a place where you can grow your own UI 🤗</p>
-    </div>
-  );
+    return (
+        <section>
+            <TextField label="Full name" {...field(model.fullName)}></TextField>
+            <Button onClick={submit}>Save</Button>
+        </section>
+    );
+
 }
